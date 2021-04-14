@@ -1,11 +1,7 @@
-ESP-IDF template app
+ESP32 FreeRTOS Queues
 ====================
 
-This is a template application to be used with [Espressif IoT Development Framework](https://github.com/espressif/esp-idf).
-
-Please check [ESP-IDF docs](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for getting started instructions.
-
-*Code in this repository is in the Public Domain (or CC0 licensed, at your option.)
-Unless required by applicable law or agreed to in writing, this
-software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-CONDITIONS OF ANY KIND, either express or implied.*
+Code description: 
+- Task 1: generates a random number every SENDER_PERIOD [miliseconds] and sends it to the queue
+- Task 2: receives the numbers from the queue every RECEIVER_PERIOD [miliseconds]
+- Each task should print the sent/received numbers to serial!
