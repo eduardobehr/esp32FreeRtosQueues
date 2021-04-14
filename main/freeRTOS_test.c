@@ -9,13 +9,13 @@
  * 
  */
 
-#define STACK_SIZE 200
+#define STACK_SIZE 2000
 
 // task functions
 void senderFunction(){
 	int i = 0;
 	for( ; ; ){
-		printf("Sender Task: %d", i);
+		printf("Sender Task: %d\n", i);
 		vTaskDelay(200 / portTICK_PERIOD_MS);
 	}
 }
@@ -23,31 +23,40 @@ void senderFunction(){
 void receiverFunction(){
 	int i = 0;
 	for( ; ; ){
-		printf("Receiver Task: %d", i);
+		printf("Receiver Task: %d\n", i);
 		vTaskDelay(500 / portTICK_PERIOD_MS);
 	}
 }
 
 
 // task handlers
-TaskHandle_t xSenderTask_h;
-TaskHandle_t xReceiverTask_h;
+TaskHandle_t xSenderTask_h = NULL;
+TaskHandle_t xReceiverTask_h = NULL;
 
-// Buffers that the tasks being created will use as its stack.  Note this is
-// an array of StackType_t variables.  The size of StackType_t is dependent on
-// the RTOS port.
-StackType_t xSenderStack[ STACK_SIZE ];
-StackType_t xReceiverStack[ STACK_SIZE ];
+/* Buffers that the tasks being created will use as its stack.  Note this is
+ an array of StackType_t variables.  The size of StackType_t is dependent on
+the RTOS port.*/
+// StackType_t xSenderStack[ STACK_SIZE ];
+// StackType_t xReceiverStack[ STACK_SIZE ];
 
 // Structure that will hold the TCB of the task being created.
-StaticTask_t xSenderBuffer;
-StaticTask_t xReceiverBuffer;
+// StaticTask_t xSenderBuffer;
+// StaticTask_t xReceiverBuffer;
+
+// This must exist for the life time of the task (docs)
+static uint8_t ucParameterSender;
+static uint8_t ucParameterReceiver;
 
 void app_main(void)
 {
-	xTaskCreate(&senderFunction, "Sender", STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, xSenderStack, &xSenderBuffer);
+	xTaskCreate(&senderFunction, "Sender", STACK_SIZE, &ucParameterSender, tskIDLE_PRIORITY, xSenderTask_h);
 	
-	xTaskCreate(&receiverFunction, "Receiver", STACK_SIZE, ( void * ) 1, tskIDLE_PRIORITY, xReceiverStack, &xReceiverBuffer);
+	xTaskCreate(&receiverFunction, "Receiver", STACK_SIZE, &ucParameterReceiver, tskIDLE_PRIORITY, xReceiverTask_h);
+	
+// 	configASSERT(xSenderTask_h);
+// 	configASSERT(xReceiverTask_h);
+	
+	
 	
 	// continues to infinite loop in main task
     int i = 0;
